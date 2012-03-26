@@ -6,14 +6,13 @@ exports = module.exports = class VBox extends Container
 	classname : 'vbox'
 
 	buildStructure : ->
-		@table = new Renderer 'table'
-		@i.addChild @table
+		@i.type = 'div'
 
 	afterAddChild : (w)->
-		tr = new Renderer 'tr'
-		tr.addChild td = new Renderer 'td', valign:'top'
-		td.addChild w.render()
-		@table.addChild tr
+		cell = new Renderer 'div'
+		cell.addClass 'row'
+		cell.addChild w.render()
+		@i.addChild cell
 
 	removeChild : (w)->
 		index = @getChildren().indexOf w

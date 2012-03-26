@@ -13,6 +13,7 @@ exports = module.exports = class Button extends Widget
 
 	buildStructure: ->
 		@i.type = 'button'
+		@i.addClass 'btn'
 
 	initFields: ->
 		@updateCaption()

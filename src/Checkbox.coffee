@@ -11,6 +11,7 @@ exports = module.exports = class Checkbox extends Widget
 
 	buildStructure: ->
 		@i.type = 'label'
+		@i.addClass 'checkbox'
 		@span = new Renderer 'span'
 		@input = new Renderer 'input', type:'checkbox', action:'checkbox'
 		@i.addChild @input

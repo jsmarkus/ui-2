@@ -5,11 +5,13 @@ exports = module.exports = class HBox extends Container
 	classname : 'hbox'
 
 	buildStructure: ->
-		@i.addChild (table = new Renderer 'table')
-		table.addChild (@tr = new Renderer 'tr')
+		@i.type = 'div'
+		@i.addClass 'row'
 
 	afterAddChild : (w)->
-		td = new Renderer 'td', valign:'top'
-		td.addChild w.render()
-		@tr.addChild td
+		cell = new Renderer 'div'
+		spanValue = w.get 'span'
+		cell.addClass "span#{spanValue}" if spanValue?
+		cell.addChild w.render()
+		@i.addChild cell
 

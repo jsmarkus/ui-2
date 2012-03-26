@@ -4257,7 +4257,8 @@ require.define("/src/Button.coffee", function (require, module, exports, __dirna
     };
 
     Button.prototype.buildStructure = function() {
-      return this.i.type = 'button';
+      this.i.type = 'button';
+      return this.i.addClass('btn');
     };
 
     Button.prototype.initFields = function() {
@@ -4311,6 +4312,7 @@ require.define("/src/Checkbox.coffee", function (require, module, exports, __dir
 
     Checkbox.prototype.buildStructure = function() {
       this.i.type = 'label';
+      this.i.addClass('checkbox');
       this.span = new Renderer('span');
       this.input = new Renderer('input', {
         type: 'checkbox',
@@ -4495,18 +4497,17 @@ require.define("/src/HBox.coffee", function (require, module, exports, __dirname
     HBox.prototype.classname = 'hbox';
 
     HBox.prototype.buildStructure = function() {
-      var table;
-      this.i.addChild((table = new Renderer('table')));
-      return table.addChild((this.tr = new Renderer('tr')));
+      this.i.type = 'div';
+      return this.i.addClass('row');
     };
 
     HBox.prototype.afterAddChild = function(w) {
-      var td;
-      td = new Renderer('td', {
-        valign: 'top'
-      });
-      td.addChild(w.render());
-      return this.tr.addChild(td);
+      var cell, spanValue;
+      cell = new Renderer('div');
+      spanValue = w.get('span');
+      if (spanValue != null) cell.addClass("span" + spanValue);
+      cell.addChild(w.render());
+      return this.i.addChild(cell);
     };
 
     return HBox;
@@ -4537,18 +4538,15 @@ require.define("/src/VBox.coffee", function (require, module, exports, __dirname
     VBox.prototype.classname = 'vbox';
 
     VBox.prototype.buildStructure = function() {
-      this.table = new Renderer('table');
-      return this.i.addChild(this.table);
+      return this.i.type = 'div';
     };
 
     VBox.prototype.afterAddChild = function(w) {
-      var td, tr;
-      tr = new Renderer('tr');
-      tr.addChild(td = new Renderer('td', {
-        valign: 'top'
-      }));
-      td.addChild(w.render());
-      return this.table.addChild(tr);
+      var cell;
+      cell = new Renderer('div');
+      cell.addClass('row');
+      cell.addChild(w.render());
+      return this.i.addChild(cell);
     };
 
     VBox.prototype.removeChild = function(w) {
@@ -4585,10 +4583,12 @@ require.define("/test.coffee", function (require, module, exports, __dirname, __
     }));
     hbox.addChild(edit = app.create({
       widget: 'Edit',
+      span: 3,
       placeholder: 'type something...'
     }));
     hbox.addChild(button = app.create({
       widget: 'Button',
+      span: 2,
       value: 'change edit text'
     }));
     return button.on('ui:click', function() {
@@ -4599,16 +4599,23 @@ require.define("/test.coffee", function (require, module, exports, __dirname, __
   };
 
   addLine = function(msg) {
-    var done, line, text;
+    var date, done, line, text;
     app.get('vbox').addChild(line = app.create({
       widget: 'HBox'
     }));
     line.addChild(done = app.create({
       widget: 'Checkbox',
+      span: 0,
       value: false
+    }));
+    line.addChild(date = app.create({
+      widget: 'Label',
+      span: 2,
+      caption: (new Date).toLocaleString()
     }));
     return line.addChild(text = app.create({
       widget: 'Label',
+      span: 4,
       caption: msg
     }));
   };
