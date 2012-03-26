@@ -4564,11 +4564,11 @@ require.define("/src/VBox.coffee", function (require, module, exports, __dirname
 
 });
 
-require.define("/test.coffee", function (require, module, exports, __dirname, __filename) {
+require.define("/app.coffee", function (require, module, exports, __dirname, __filename) {
     (function() {
   var UI, addLine, app, init, render;
 
-  UI = require('./src/Application');
+  UI = require('./src/Application.coffee');
 
   app = new UI;
 
@@ -4639,4 +4639,4 @@ require.define("/test.coffee", function (require, module, exports, __dirname, __
 }).call(this);
 
 });
-require("/test.coffee");
+require("/app.coffee");
