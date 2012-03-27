@@ -1,4 +1,4 @@
-UI = require './src/Application.coffee'
+UI = require '../../src/Application.coffee'
 
 app = new UI
 

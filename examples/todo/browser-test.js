@@ -4568,7 +4568,7 @@ require.define("/app.coffee", function (require, module, exports, __dirname, __f
     (function() {
   var UI, addLine, app, init, render;
 
-  UI = require('./src/Application.coffee');
+  UI = require('../../src/Application.coffee');
 
   app = new UI;
 
