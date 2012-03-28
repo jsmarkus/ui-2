@@ -1,5 +1,5 @@
-DEPS := $(shell find ../../src -type f)
-BROWSERIFY := "doubledot-browserify"
+DEPS := $(shell find ../../node_modules -type f)
+BROWSERIFY := "browserify"
 
 all: browser-test.min.js
 
