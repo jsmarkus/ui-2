@@ -3565,7 +3565,7 @@ require.define("/app.coffee", function (require, module, exports, __dirname, __f
     (function() {
   var UI, addLine, app, init, render;
 
-  UI = require('ui2/Application.coffee');
+  UI = require('ui2/Application');
 
   app = new UI;
 
