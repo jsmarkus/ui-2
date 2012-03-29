@@ -1,6 +1,17 @@
 UI = require 'ui2/Application'
 
+TodoCollection = require './todo-collection'
+TodoModel = require './todo-model'
+
+backbone = require 'ui2/share/backbone'
+bbls = require('./backbone-localstorage')
+bbls.enable backbone
+
 app = new UI
+
+app.todos = new TodoCollection
+app.todos.localStorage = new bbls.Store 'todo'
+
 
 init = ()->
 	vbox = app.create widget:'VBox', id:'vbox'

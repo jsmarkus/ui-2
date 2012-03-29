@@ -3561,13 +3561,182 @@ require.define("/node_modules/ui2/VBox.coffee", function (require, module, expor
 
 });
 
+require.define("/todo-collection.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var TodoCollection, TodoModel, backbone, exports;
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+  backbone = require('ui2/share/backbone');
+
+  TodoModel = require('./todo-model');
+
+  exports = module.exports = TodoCollection = (function() {
+
+    __extends(TodoCollection, backbone.Collection);
+
+    function TodoCollection() {
+      TodoCollection.__super__.constructor.apply(this, arguments);
+    }
+
+    TodoCollection.prototype.model = TodoModel;
+
+    return TodoCollection;
+
+  })();
+
+}).call(this);
+
+});
+
+require.define("/node_modules/ui2/share/backbone.coffee", function (require, module, exports, __dirname, __filename) {
+
+  module.exports = require('backbone');
+
+});
+
+require.define("/todo-model.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var TodoModel, backbone, exports;
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+  backbone = require('ui2/share/backbone');
+
+  exports = module.exports = TodoModel = (function() {
+
+    __extends(TodoModel, backbone.Model);
+
+    function TodoModel() {
+      TodoModel.__super__.constructor.apply(this, arguments);
+    }
+
+    TodoModel.prototype.url = '/todo';
+
+    return TodoModel;
+
+  })();
+
+}).call(this);
+
+});
+
+require.define("/backbone-localstorage.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var S4, Store, guid;
+  var __hasProp = Object.prototype.hasOwnProperty;
+
+  S4 = function() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  };
+
+  guid = function() {
+    return S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4();
+  };
+
+  Store = (function() {
+
+    function Store(name) {
+      var store;
+      this.name = name;
+      store = localStorage.getItem(this.name);
+      this.data = (store && JSON.parse(store)) || {};
+    }
+
+    Store.prototype.save = function() {
+      return localStorage.setItem(this.name, JSON.stringify(this.data));
+    };
+
+    Store.prototype.create = function(model) {
+      if (!model.id) model.id = model.attributes.id = guid();
+      this.data[model.id] = model;
+      this.save();
+      return model;
+    };
+
+    Store.prototype.update = function(model) {
+      this.data[model.id] = model;
+      this.save();
+      return model;
+    };
+
+    Store.prototype.find = function(model) {
+      return this.data[model.id];
+    };
+
+    Store.prototype.findAll = function() {
+      var key, val, _ref, _results;
+      _ref = this.data;
+      _results = [];
+      for (key in _ref) {
+        if (!__hasProp.call(_ref, key)) continue;
+        val = _ref[key];
+        _results.push(val);
+      }
+      return _results;
+    };
+
+    Store.prototype.destroy = function(model) {
+      delete this.data[model.id];
+      this.save();
+      return model;
+    };
+
+    return Store;
+
+  })();
+
+  exports.Store = Store;
+
+  exports.enable = function(backbone) {
+    return backbone.sync = function(method, model, options) {
+      var resp, store;
+      resp = void 0;
+      store = model.localStorage || model.collection.localStorage;
+      switch (method) {
+        case "read":
+          resp = (model.id ? store.find(model) : store.findAll());
+          break;
+        case "create":
+          resp = store.create(model);
+          break;
+        case "update":
+          resp = store.update(model);
+          break;
+        case "delete":
+          resp = store.destroy(model);
+      }
+      if (resp) {
+        return options.success(resp);
+      } else {
+        return options.error("Record not found");
+      }
+    };
+  };
+
+}).call(this);
+
+});
+
 require.define("/app.coffee", function (require, module, exports, __dirname, __filename) {
     (function() {
-  var UI, addLine, app, init, render;
+  var TodoCollection, TodoModel, UI, addLine, app, backbone, bbls, init, render;
 
   UI = require('ui2/Application');
 
+  TodoCollection = require('./todo-collection');
+
+  TodoModel = require('./todo-model');
+
+  backbone = require('ui2/share/backbone');
+
+  bbls = require('./backbone-localstorage');
+
+  bbls.enable(backbone);
+
   app = new UI;
+
+  app.todos = new TodoCollection;
+
+  app.todos.localStorage = new bbls.Store('todo');
 
   init = function() {
     var button, edit, hbox, vbox;
